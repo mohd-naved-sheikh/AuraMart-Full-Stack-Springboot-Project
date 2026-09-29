@@ -30,29 +30,43 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public Cart saveCart(Integer productId, Integer userId) {
 
-		UserDtls userDtls = userRepository.findById(userId).get();
-		Product product = productRepository.findById(productId).get();
+	    UserDtls userDtls = userRepository.findById(userId).get();
+	    Product product = productRepository.findById(productId).get();
 
-		Cart cartStatus = cartRepository.findByProductIdAndUserId(productId, userId);
+	    
+	    if (product.getStock() <= 0) {
+	        return null;
+	    }
 
-		Cart cart = null;
+	    Cart cartStatus = cartRepository.findByProductIdAndUserId(productId, userId);
 
-		if (ObjectUtils.isEmpty(cartStatus)) {
-			cart = new Cart();
-			cart.setProduct(product);
-			cart.setUser(userDtls);
-			cart.setQuantity(1);
-			cart.setTotalPrice(1 * product.getDiscountPrice());
-		} else {
-			cart = cartStatus;
-			cart.setQuantity(cart.getQuantity() + 1);
-			cart.setTotalPrice(cart.getQuantity() * cart.getProduct().getDiscountPrice());
-		}
-		Cart saveCart = cartRepository.save(cart);
+	    Cart cart = null;
 
-		return saveCart;
+	    if (ObjectUtils.isEmpty(cartStatus)) {
+
+	        cart = new Cart();
+	        cart.setProduct(product);
+	        cart.setUser(userDtls);
+	        cart.setQuantity(1);
+	        cart.setTotalPrice(product.getDiscountPrice());
+
+	    } else {
+
+	        cart = cartStatus;
+
+	       
+	        if (cart.getQuantity() >= product.getStock()) {
+	            return null;
+	        }
+
+	        cart.setQuantity(cart.getQuantity() + 1);
+	        cart.setTotalPrice(
+	                cart.getQuantity() * cart.getProduct().getDiscountPrice()
+	        );
+	    }
+
+	    return cartRepository.save(cart);
 	}
-
 	@Override
 	public List<Cart> getCartsByUser(Integer userId) {
 		List<Cart> carts = cartRepository.findByUserId(userId);
@@ -79,27 +93,45 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public void updateQuantity(String sy, Integer cid) {
 
-		Cart cart = cartRepository.findById(cid).get();
-		int updateQuantity;
+	    Cart cart = cartRepository.findById(cid).get();
 
-		if (sy.equalsIgnoreCase("de")) {
-			updateQuantity = cart.getQuantity() - 1;
+	    int updateQuantity;
 
-			if (updateQuantity <= 0) {
-				cartRepository.delete(cart);
-			} else {
-				cart.setQuantity(updateQuantity);
-				cartRepository.save(cart);
-			}
+	    if (sy.equalsIgnoreCase("de")) {
 
-		} else {
-			updateQuantity = cart.getQuantity() + 1;
-			cart.setQuantity(updateQuantity);
-			cartRepository.save(cart);
-		}
+	        updateQuantity = cart.getQuantity() - 1;
 
-	}
-	
+	        if (updateQuantity <= 0) {
+
+	            cartRepository.delete(cart);
+
+	        } else {
+
+	            cart.setQuantity(updateQuantity);
+	            cart.setTotalPrice(
+	                    updateQuantity * cart.getProduct().getDiscountPrice()
+	            );
+
+	            cartRepository.save(cart);
+	        }
+
+	    } else {
+
+	        updateQuantity = cart.getQuantity() + 1;
+
+	        // STOCK CHECK
+	        if (updateQuantity > cart.getProduct().getStock()) {
+	            return;
+	        }
+
+	        cart.setQuantity(updateQuantity);
+	        cart.setTotalPrice(
+	                updateQuantity * cart.getProduct().getDiscountPrice()
+	        );
+
+	        cartRepository.save(cart);
+	    }
+	}	
 	
 	@Override
 	public void clearCartByUser(Integer userId) {

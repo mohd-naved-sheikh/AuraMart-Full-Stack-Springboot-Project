@@ -31,18 +31,18 @@ public class CommonUtil {
 	@Lazy
 	private UserService userService;
 	
-    @Autowired
-	private AmazonS3 amazonS3;
-	
-	@Value("${aws.s3.bucket.category}")
-	private String categoryBucket;
-	
-	@Value("${aws.s3.bucket.product}")
-	private String productBucket;
-	
-	@Value("${aws.s3.bucket.profile}")
-	private String profileBucket;
-	
+//    @Autowired
+//	private AmazonS3 amazonS3;
+//	
+//	@Value("${aws.s3.bucket.category}")
+//	private String categoryBucket;
+//	
+//	@Value("${aws.s3.bucket.product}")
+//	private String productBucket;
+//	
+//	@Value("${aws.s3.bucket.profile}")
+//	private String profileBucket;
+//	
 
 	public Boolean sendMail(String url, String reciepentEmail) throws UnsupportedEncodingException, MessagingException {
 
@@ -121,22 +121,23 @@ public class CommonUtil {
 	
 	public String getImageUrl(MultipartFile file, Integer bucketType) {
 
-	    String bucketName = null;
-
-	    if (bucketType == 1) {
-	        bucketName = categoryBucket;
-	    } else if (bucketType == 2) {
-	        bucketName = productBucket;
-	    } else {
-	        bucketName = profileBucket;
+	    if (file == null || file.isEmpty()) {
+	        return "/img/default.jpg";
 	    }
 
-	    String imageName = (file != null && !file.isEmpty()) ? file.getOriginalFilename() : "default.jpg";
+	    String folder;
 
-	    // FIXED LINE BELOW: Added .ap-southeast-2
-	    String url = "https://" + bucketName + ".s3.ap-southeast-2.amazonaws.com/" + imageName;
-	    
-	    return url;
+	    if (bucketType == BucketType.CATEGORY.getId()) {
+	        folder = "category_img";
+	    } else if (bucketType == BucketType.PRODUCT.getId()) {
+	        folder = "product_img";
+	    } else if (bucketType == BucketType.PROFILE.getId()) {
+	        folder = "profile_img";
+	    } else {
+	        folder = "other";
+	    }
+
+	    return "/img/" + folder + "/" + file.getOriginalFilename();
 	}
 
 }

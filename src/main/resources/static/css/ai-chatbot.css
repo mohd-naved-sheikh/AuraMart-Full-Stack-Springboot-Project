@@ -1,0 +1,1253 @@
+@charset "UTF-8";
+
+/* ==========================================
+
+            AURA AI - PART 1
+
+========================================== */
+
+:root{
+
+    --primary:#FFC107;
+
+    --secondary:#E0A800;
+
+    --dark:#181A20;
+
+    --dark2:#23262F;
+
+    --light:#FFFFFF;
+
+    --text:#F5F5F5;
+
+    --gray:#BDBDBD;
+
+    --shadow:0 12px 35px rgba(0,0,0,.25);
+
+    --radius:18px;
+
+}
+
+/* ================================
+
+        Floating Button
+
+================================ */
+
+.chat-toggle-btn{
+
+    position:fixed;
+
+    right:30px;
+
+    bottom:30px;
+
+    width:68px;
+
+    height:68px;
+
+    border:none;
+
+    outline:none;
+
+    cursor:pointer;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#FFC107,#E0A800);
+
+    color:#fff;
+
+    font-size:28px;
+
+    box-shadow:0 15px 40px rgba(255,193,7,.35);
+
+    transition:.35s ease;
+
+    z-index:9999;
+
+}
+
+.chat-toggle-btn:hover{
+
+    transform:translateY(-5px) scale(1.06);
+
+    box-shadow:0 20px 45px rgba(255,193,7,.45);
+
+}
+
+.chat-toggle-btn i{
+
+    transform:rotate(-20deg);
+
+}
+
+/* ================================
+
+          Chat Window
+
+================================ */
+
+.chat-container{
+
+    position:fixed;
+
+    right:30px;
+
+    bottom:115px;
+
+    width:390px;
+
+    height:640px;
+
+    background:#fff;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+
+    display:flex;
+
+    flex-direction:column;
+
+    animation:popup .35s ease;
+
+    z-index:9998;
+
+}
+
+/* ================================
+
+            Header
+
+================================ */
+
+.chat-header {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 12px 14px;
+
+    background: linear-gradient(
+
+        135deg,
+
+        #FFC107 0%,
+
+        #F4B400 55%,
+
+        #D4A017 100%
+
+    );
+
+    color: #fff;
+
+    border-bottom: 3px solid #FFC107;
+
+    flex-shrink: 0;
+
+}
+
+.chat-header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+.ai-logo{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    background:#FFC107;
+
+color:#111111;
+
+border:2px solid #fff;
+
+        display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    backdrop-filter:blur(8px);
+
+    font-size:22px;
+
+}
+
+.ai-logo i{
+
+    transform:rotate(-20deg);
+
+}
+
+.header-info h4{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.header-info small{
+
+    display:block;
+
+    margin-top:2px;
+
+    font-size:12px;
+
+    opacity:.85;
+
+}
+
+.online-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    margin-top:6px;
+
+    font-size:12px;
+
+}
+
+.online-status i{
+
+    font-size:8px;
+
+    color:#57ff88;
+
+}
+
+/* ================================
+
+          Close Button
+
+================================ */
+
+.close-btn {
+
+    border: none;
+
+    background: rgba(255, 255, 255, 0.18);
+
+    color: white;
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    margin-left: 10px;
+
+    transition: 0.25s;
+
+}
+
+.close-btn:hover {
+
+    background: white;
+
+    color: #FFC107;
+
+}
+
+/* ================================
+
+            Animation
+
+================================ */
+
+@keyframes popup{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(30px) scale(.9);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0) scale(1);
+
+    }
+
+}
+
+/* ==========================================
+
+            AURA AI - PART 2
+
+========================================== */
+
+/* ================================
+
+            Chat Body
+
+================================ */
+
+.chat-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:22px 18px;
+
+    background:#F7F8FC;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.chat-body::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.chat-body::-webkit-scrollbar-thumb{
+
+    background:#C8C8C8;
+
+    border-radius:20px;
+
+}
+
+.chat-body::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+/* ================================
+
+            AI Message
+
+================================ */
+
+.ai-message{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    animation:fadeUp .35s ease;
+
+}
+
+.avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+  background:#111111;
+
+    color:#FFC107;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+
+    flex-shrink:0;
+
+}
+
+.avatar i{
+
+    transform:rotate(-20deg);
+
+}
+
+.avatar.small{
+
+    width:36px;
+
+    height:36px;
+
+    font-size:14px;
+
+}
+
+.message{
+
+    max-width:78%;
+
+    background:white;
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    line-height:1.6;
+
+    font-size:14px;
+
+    color:#333;
+
+}
+
+.message ul{
+
+    padding-left:18px;
+
+    margin:10px 0;
+
+}
+
+.message li{
+
+    margin-bottom:8px;
+
+}
+
+/* ================================
+
+            User Message
+
+================================ */
+
+.user-message{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    animation:fadeUp .35s ease;
+
+}
+
+.user-message .message{
+
+    background:linear-gradient(135deg,#FFC107,#E0A800);
+
+    color:white;
+
+    border-bottom-right-radius:6px;
+
+}
+
+/* ================================
+
+        Typing Indicator
+
+================================ */
+
+.typing-indicator{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:0 18px 15px;
+
+    background:#F7F8FC;
+
+}
+
+.typing-bubble{
+
+    background:white;
+
+    padding:12px 18px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    gap:6px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.typing-bubble span{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#FFC107;
+
+    animation:typing 1.4s infinite;
+
+}
+
+.typing-bubble span:nth-child(2){
+
+    animation-delay:.2s;
+
+}
+
+.typing-bubble span:nth-child(3){
+
+    animation-delay:.4s;
+
+}
+
+/* ================================
+
+            Footer
+
+================================ */
+
+.chat-footer{
+
+    padding:18px;
+
+    background:white;
+
+    border-top:1px solid #ECECEC;
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+}
+
+.chat-footer input{
+
+    flex:1;
+
+    height:52px;
+
+    border:none;
+
+    outline:none;
+
+    background:#F4F5F8;
+
+    border-radius:30px;
+
+    padding:0 20px;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.chat-footer input:focus{
+
+    background:white;
+
+    box-shadow:0 0 0 2px rgba(255,193,7,.18);
+
+}
+
+#sendBtn{
+
+    width:52px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:50%;
+
+   background:#111111;
+
+    color:#FFC107;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.3s;
+
+    box-shadow:0 10px 25px rgba(255,193,7,.25);
+
+}
+
+#sendBtn:hover{
+
+    transform:scale(1.08);
+
+}
+
+/* ================================
+
+            Animation
+
+================================ */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(12px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes typing{
+
+    0%{
+
+        transform:translateY(0);
+
+        opacity:.4;
+
+    }
+
+    50%{
+
+        transform:translateY(-5px);
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+        opacity:.4;
+
+    }
+
+}/* ==========================================
+
+            AURA AI - PART 3
+
+========================================== */
+
+/* ================================
+
+            Hover Effects
+
+================================ */
+
+.message{
+
+    transition:all .3s ease;
+
+}
+
+.message:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+
+}
+
+.ai-logo,
+
+.avatar,
+
+.chat-toggle-btn{
+
+    background:#FFC107;
+
+color:#111111;
+
+    transition:all .3s ease;
+
+}
+
+.ai-logo:hover,
+
+.avatar:hover{
+
+    transform:rotate(-15deg) scale(1.08);
+
+}
+
+.chat-toggle-btn:hover{
+
+    background:#111111;
+
+    color:#FFC107;
+
+}
+
+/* ================================
+
+            Glass Effect
+
+================================ */
+
+.chat-container{
+
+    backdrop-filter:blur(20px);
+
+    -webkit-backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.35);
+
+}
+
+/* ================================
+
+            Header Gradient
+
+================================ */
+
+.chat-header{
+
+    background:linear-gradient(
+
+            135deg,
+
+            #FFC107 0%,
+
+            #F4B400 55%,
+
+            #D4A017 100%
+
+    );
+
+}
+
+/* ================================
+
+        Floating Button Glow
+
+================================ */
+
+.chat-toggle-btn{
+
+    animation:floatButton 3s infinite ease-in-out;
+
+}
+
+.chat-toggle-btn::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-8px;
+
+    border-radius:50%;
+
+    background:rgba(255,193,7,.18);
+
+    z-index:-1;
+
+    animation:pulse 2s infinite;
+
+}
+
+/* ================================
+
+            Input Placeholder
+
+================================ */
+
+.chat-footer input::placeholder{
+
+    color:#8A8A8A;
+
+}
+
+/* ================================
+
+            Selection
+
+================================ */
+
+.chat-body ::selection{
+
+    background:#FFC107;
+
+    color:white;
+
+}
+
+/* ================================
+
+            Online Status
+
+================================ */
+
+.online-status i{
+
+    animation:onlineBlink 1.5s infinite;
+
+}
+
+/* ================================
+
+            Responsive
+
+================================ */
+
+@media(max-width:768px){
+
+    .chat-container{
+
+        width:100%;
+
+        height:100vh;
+
+        right:0;
+
+        bottom:0;
+
+        border-radius:0;
+
+    }
+
+    .chat-toggle-btn{
+
+        width:60px;
+
+        height:60px;
+
+        right:20px;
+
+        bottom:20px;
+
+    }
+
+}
+
+/* ================================
+
+            Large Screens
+
+================================ */
+
+@media(min-width:1600px){
+
+    .chat-container{
+
+        width:420px;
+
+        height:700px;
+
+    }
+
+}
+
+/* ================================
+
+            Animations
+
+================================ */
+
+@keyframes floatButton{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-6px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes pulse{
+
+    0%{
+
+        transform:scale(.9);
+
+        opacity:.6;
+
+    }
+
+    70%{
+
+        transform:scale(1.25);
+
+        opacity:0;
+
+    }
+
+    100%{
+
+        opacity:0;
+
+    }
+
+}
+
+@keyframes onlineBlink{
+
+    0%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.4;
+
+    }
+
+    100%{
+
+        opacity:1;
+
+    }
+
+}
+
+/* ================================
+
+        Smooth Transition
+
+================================ */
+
+.chat-container{
+
+    transition:all .35s ease;
+
+}
+
+.chat-container.hide{
+
+    opacity:0;
+
+    transform:translateY(40px) scale(.95);
+
+    pointer-events:none;
+
+}
+
+/* ================================
+
+        Footer Button
+
+================================ */
+
+#sendBtn:hover{
+
+    background:#FFC107;
+
+    color:#111111;
+
+}
+
+#sendBtn:active{
+
+    transform:scale(.95);
+
+}
+
+/* ================================
+
+        Meteor Icon
+
+================================ */
+
+.fa-meteor{
+
+    transform:rotate(-25deg);
+
+}
+
+/* ================================
+
+        Message Links
+
+================================ */
+
+.message a{
+
+    color:#FFC107;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.message a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ================================
+
+        Images
+
+================================ */
+
+.message img{
+
+    width:100%;
+
+    border-radius:12px;
+
+    margin-top:10px;
+
+}
+
+/* ================================
+
+        Code Blocks
+
+================================ */
+
+.message pre{
+
+    background:#202124;
+
+    color:#F8F8F8;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    overflow:auto;
+
+}
+
+.message code{
+
+    font-family:Consolas, monospace;
+
+}
+
+/* ================================
+
+        Scroll Behavior
+
+================================ */
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+/* ================================
+
+        Finish
+
+================================ */
+
+
+
+/* ===== FIX AURA AI HEADER ===== */
+
+.chat-header {
+
+    position: relative !important;
+
+    width: 100% !important;
+
+    min-height: 82px !important;
+
+    height: 82px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    padding: 14px 18px !important;
+
+    background: #111111 !important;
+
+    color: white !important;
+
+    flex-shrink: 0 !important;
+
+    z-index: 10 !important;
+
+}
+
+.chat-header-left {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 12px !important;
+
+    flex: 1 !important;
+
+}
+
+.ai-logo {
+
+    width: 48px !important;
+
+    height: 48px !important;
+
+    flex-shrink: 0 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    background: #FFC107 !important;
+
+    color: #111111 !important;
+
+    border-radius: 50% !important;
+
+}
+
+.header-info {
+
+    display: block !important;
+
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+}
+
+.header-info h4,
+.header-info small,
+.online-status {
+
+    display: block !important;
+
+    visibility: visible !important;
+
+}
+
+.close-btn {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    width: 38px !important;
+
+    height: 38px !important;
+
+    flex-shrink: 0 !important;
+
+    margin-left: 10px !important;
+
+    background: #FFC107 !important;
+
+    color: #111111 !important;
+
+    border: none !important;
+
+    border-radius: 50% !important;
+
+    cursor: pointer !important;
+
+    z-index: 20 !important;
+
+}
+
+/* ==========================================
+   AURA AI - VIEWPORT HEIGHT FIX
+   ========================================== */
+
+.chat-container {
+    height: min(640px, calc(100vh - 135px)) !important;
+    max-height: calc(100vh - 135px) !important;
+}
+
+@media (min-width: 1600px) {
+    .chat-container {
+        height: min(700px, calc(100vh - 135px)) !important;
+        max-height: calc(100vh - 135px) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        height: calc(100vh - 20px) !important;
+        max-height: calc(100vh - 20px) !important;
+        bottom: 0 !important;
+    }
+}

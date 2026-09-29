@@ -118,7 +118,7 @@ public class AdminController {
 	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
 
-		// String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
+		String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
 		String imageUrl = commonUtil.getImageUrl(file, BucketType.CATEGORY.getId());
 		category.setImageName(imageUrl);
 
@@ -134,17 +134,7 @@ public class AdminController {
 				session.setAttribute("errorMsg", "Not saved ! internal server error");
 			} else {
 
-//				File saveFile = new ClassPathResource("static/img").getFile();
-//00
-//				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
-//						+ file.getOriginalFilename());
-//
-//				// System.out.println(path);
-//				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-				fileService.uploadFilesS3(file, 1);
-				session.setAttribute("succMsg", "Saved successfully");
-			}
+				fileService.uploadFilesS3(file, BucketType.CATEGORY.getId());			}
 		}
 
 		return "redirect:/admin/category";

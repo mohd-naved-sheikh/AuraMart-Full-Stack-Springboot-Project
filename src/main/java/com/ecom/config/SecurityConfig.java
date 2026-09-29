@@ -71,7 +71,7 @@ public class SecurityConfig {
 		    .authorizeHttpRequests(req -> req
 		        .requestMatchers("/user/**").hasRole("USER")
 		        .requestMatchers("/admin/**").hasRole("ADMIN")
-		        .requestMatchers("/**").permitAll()
+		        .requestMatchers("/**").permitAll().requestMatchers("/api/payment/**").permitAll()
 		    )
 		    .formLogin(form -> form
 		        .loginPage("/signin")

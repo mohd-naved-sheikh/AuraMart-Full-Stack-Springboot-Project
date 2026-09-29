@@ -3,38 +3,37 @@
 	th:replace="~{base::layout(~{::section})}">
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Aura Mart | Checkout</title>
 </head>
 <body>
 	<section>
 
 		<div class="container mt-5 p-5">
-			<form action="/user/save-order" method="post" id="orders" novalidate>
+			<!-- 🌟 Form ko same rakha hai -->
+			<form action="/user/save-order" method="post" id="orderForm" novalidate>
 				<div class="row">
 
 					<div class="col-md-6">
-
-
 						<div class="mb-3 row">
 							<p class="text-center fs-4">Billing Address</p>
 							<hr>
 							<div class="col p-1">
-								<label>First Name</label> <input type="text" name="firstName" required
+								<label>First Name</label> <input type="text" name="firstName" id="firstName" required
 									class="form-control mt-1">
 							</div>
 							<div class="col p-1">
-								<label>Last Name</label> <input type="text" name="lastName" required
+								<label>Last Name</label> <input type="text" name="lastName" id="lastName" required
 									class="form-control mt-1">
 							</div>
 						</div>
 
 						<div class="mb-3 row">
 							<div class="col p-1">
-								<label>Email</label> <input type="email" name="email" required
+								<label>Email</label> <input type="email" name="email" id="email" required
 									class="form-control col">
 							</div>
 							<div class="col p-1">
-								<label>Mobile Number</label> <input type="text" name="mobileNo" required
+								<label>Mobile Number</label> <input type="text" name="mobileNo" id="mobileNo" required
 									class="form-control col ms-2">
 							</div>
 						</div>
@@ -59,9 +58,8 @@
 									class="form-control col ms-2">
 							</div>
 						</div>
-						<!-- </form> -->
-
 					</div>
+					
 					<div class="col-md-6">
 						<p class="text-center fs-4">Payment Type</p>
 						<hr>
@@ -89,7 +87,7 @@
 										<tr class="border-top">
 											<td>Total Price</td>
 											<td>:</td>
-											<td>&#8377; [[${totalOrderPrice}]]</td>
+											<td>&#8377; <span id="totalOrderPriceDisplay">[[${totalOrderPrice}]]</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -97,22 +95,20 @@
 						</div>
 
 						<div class="card shadow p-3 mb-5 mt-2 bg-body-tertiary rounded">
-
 							<div class="card-body">
-								<!-- <form action="/login" method="post"> -->
 								<div class="mb-3">
-									<label class="form-label">Select Payment Type</label> <select required
-										name="paymentType" class="form-control">
+									<label class="form-label">Select Payment Type</label> 
+									<select required name="paymentType" id="paymentType" class="form-control">
 										<option value="">--select--</option>
 										<option value="COD">Cash On Delivery</option>
 										<option value="ONLINE">Online Payment</option>
 									</select>
-
 								</div>
 
-								<button class="btn bg-black text-white col-md-12">Place
-									Order</button>
+								<input type="hidden" name="razorpayPaymentId" id="razorpayPaymentId">
 
+								<!-- 🌟 FIX: type="submit" ko hatakar type="button" kiya aur id="placeOrderBtn" de di -->
+								<button type="button" id="placeOrderBtn" class="btn bg-black text-white col-md-12">Place Order</button>
 							</div>
 						</div>
 					</div>
@@ -120,6 +116,88 @@
 				</div>
 			</form>
 		</div>
+
+		<!-- 🌟 Load Razorpay Script Engine -->
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+		
+		<script th:inline="javascript">
+			// 🌟 FIX: direct click listener control mechanism
+			document.getElementById('placeOrderBtn').onclick = async function(e) {
+				let form = document.getElementById('orderForm');
+				let paymentType = document.getElementById('paymentType').value;
+				
+				// 1. Pehle check karo saari billing address fields required format me bhari hain ya nahi
+				if (!form.checkValidity()) {
+					form.reportValidity(); // Agar khali hongi toh browser yahin rok dega aur alert dega
+					return;
+				}
+				
+				if (paymentType === '') {
+					alert("Please select a payment type first!");
+					return;
+				}
+				
+				// 2. Case COD: Direct form submit hone do
+				if (paymentType === 'COD') {
+					form.submit();
+					return;
+				}
+				
+				// 3. Case ONLINE: Yahan modal trigger hoga intercept pipeline ke sath
+				if (paymentType === 'ONLINE') {
+					let totalAmount = document.getElementById('totalOrderPriceDisplay').innerText;
+					let customerName = document.getElementById('firstName').value + " " + document.getElementById('lastName').value;
+					let customerEmail = document.getElementById('email').value;
+					let customerMobile = document.getElementById('mobileNo').value;
+		
+					try {
+						// Backend Controller Endpoint se Order ID call trigger karna
+						let response = await fetch('/api/payment/create', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ amount: totalAmount })
+						});
+		
+						if (!response.ok) {
+							alert("Backend server error! Failed to initiate gateway key token.");
+							return;
+						}
+		
+						let orderData = await response.json();
+						
+						// Razorpay Dashboard specifications model configuration
+						var options = {
+							"key": "rzp_test_T70yodbXsX0Y9v", // ⚠️ Yahan apni rzp_test_... wali real key paste karo verbatim
+							"amount": orderData.amount * 100, 
+							"currency": "INR",
+							"name": "Aura Mart",
+							"description": "Secure Checkout Platform",
+							"order_id": orderData.orderId, 
+							"handler": function (successRes) {
+								// Success token capture handler code block execution
+								document.getElementById('razorpayPaymentId').value = successRes.razorpay_payment_id;
+								
+								// Ab jaakar form safely submit hoga backend database mapping par
+								form.submit();
+							},
+							"prefill": {
+								"name": customerName,
+								"email": customerEmail,
+								"contact": customerMobile
+							},
+							"theme": { "color": "#000000" }
+						};
+		
+						var rzpWindow = new Razorpay(options);
+						rzpWindow.open();
+		
+					} catch (error) {
+						console.error("Payment Gateway Sync Error: ", error);
+						alert("Network failure! Check if your Spring Boot Application is active.");
+					}
+				}
+			};
+		</script>
 
 	</section>
 </body>

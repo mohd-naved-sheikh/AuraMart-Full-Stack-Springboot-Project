@@ -71,17 +71,24 @@ public class UserController {
 	}
 
 	@GetMapping("/addCart")
-	public String addToCart(@RequestParam Integer pid, @RequestParam Integer uid, HttpSession session) {
-		Cart saveCart = cartService.saveCart(pid, uid);
+	public String addToCart(@RequestParam Integer pid,
+	                        @RequestParam Integer uid,
+	                        HttpSession session) {
 
-		if (ObjectUtils.isEmpty(saveCart)) {
-			session.setAttribute("errorMsg", "Product add to cart failed");
-		} else {
-			session.setAttribute("succMsg", "Product added to cart");
-		}
-		return "redirect:/product/" + pid;
+	    Cart saveCart = cartService.saveCart(pid, uid);
+
+	    if (ObjectUtils.isEmpty(saveCart)) {
+	        session.setAttribute("errorMsg",
+	                "Maximum available stock already added to cart.");
+	    } else {
+	        session.setAttribute("succMsg",
+	                "Product added to cart");
+	    }
+
+	    return "redirect:/product/" + pid;
 	}
-
+	
+	
 	@GetMapping("/cart")
 	public String loadCartPage(Principal p, Model m) {
 
@@ -108,29 +115,55 @@ public class UserController {
 	}
 
 	@GetMapping("/orders")
-	public String orderPage(Principal p, Model m) {
-		UserDtls user = getLoggedInUserDetails(p);
-		List<Cart> carts = cartService.getCartsByUser(user.getId());
-		m.addAttribute("carts", carts);
-		if (carts.size() > 0) {
-			Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
-			Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 250 + 100;
-			m.addAttribute("orderPrice", orderPrice);
-			m.addAttribute("totalOrderPrice", totalOrderPrice);
-		}
-		return "user/order";
-	}
+	public String orderPage(Principal p, Model m, HttpSession session) {
 
+	    UserDtls user = getLoggedInUserDetails(p);
+
+	    List<Cart> carts = cartService.getCartsByUser(user.getId());
+
+	    if (carts == null || carts.isEmpty()) {
+	        session.setAttribute("errorMsg",
+	                "Your cart is empty. Please add a product first.");
+
+	        return "redirect:/user/cart";
+	    }
+
+	    m.addAttribute("carts", carts);
+
+	    Double orderPrice =
+	            carts.get(carts.size() - 1).getTotalOrderPrice();
+
+	    Double totalOrderPrice = orderPrice + 250 + 100;
+
+	    m.addAttribute("orderPrice", orderPrice);
+	    m.addAttribute("totalOrderPrice", totalOrderPrice);
+
+	    return "user/order";
+	}
+	
+	
 	@PostMapping("/save-order")
-	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception {
-		// System.out.println(request);
-		UserDtls user = getLoggedInUserDetails(p);
-		orderService.saveOrder(user.getId(), request);
-		cartService.clearCartByUser(user.getId());
+	public String saveOrder(@ModelAttribute OrderRequest request,
+	                        Principal p,
+	                        HttpSession session) throws Exception {
 
-		return "redirect:/user/success";
+	    UserDtls user = getLoggedInUserDetails(p);
+
+	    List<Cart> carts = cartService.getCartsByUser(user.getId());
+	    if (carts == null || carts.isEmpty()) {
+
+	        session.setAttribute("errorMsg",
+	                "Your cart is empty. Cannot place order.");
+
+	        return "redirect:/user/cart";
+	    }
+
+	    orderService.saveOrder(user.getId(), request);
+
+	    cartService.clearCartByUser(user.getId());
+
+	    return "redirect:/user/success";
 	}
-
 	@GetMapping("/success")
 	public String loadSuccess() {
 		return "user/success";

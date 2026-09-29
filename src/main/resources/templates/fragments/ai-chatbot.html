@@ -1,0 +1,234 @@
+<!-- <!-- <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="chatbot">
+
+    Floating AI Button
+    <button id="chatToggleBtn" class="chat-toggle-btn">
+        <i class="fa-solid fa-meteor"></i>
+    </button>
+
+    Chat Window
+    <div id="chatContainer" class="chat-container" style="display:none;">
+
+        Header
+        <div class="chat-header">
+
+            <div class="chat-header-left">
+
+                <div class="ai-logo">
+                    <i class="fa-solid fa-meteor"></i>
+                </div>
+
+                <div class="header-info">
+                    <h4>Aura AI</h4>
+                    <small>Your Smart Shopping Assistant</small>
+                    <span class="online-status">
+                        <i class="fa-solid fa-circle"></i>
+                        Online
+                    </span>
+                </div>
+
+            </div>
+
+            <button id="closeChatBtn" class="close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        Chat Messages
+        <div id="chatMessages" class="chat-body">
+
+            <div class="ai-message">
+
+                <div class="avatar">
+                    <i class="fa-solid fa-meteor"></i>
+                </div>
+
+                <div class="message">
+
+                    <strong>Hello 👋</strong>
+
+                    <br><br>
+
+                    I'm <strong>Aura AI</strong>, your intelligent shopping assistant.
+
+                    <br><br>
+
+                    I can help you with:
+
+                    <ul>
+                        <li>🛍 Product Recommendations</li>
+                        <li>💰 Price Comparisons</li>
+                        <li>📱 Product Information</li>
+                        <li>🎯 Shopping Suggestions</li>
+                    </ul>
+
+                    Ask me anything!
+
+                </div>
+
+            </div>
+
+        </div>
+
+        Typing Indicator
+        <div id="typingIndicator" class="typing-indicator" style="display:none;">
+
+            <div class="avatar small">
+                <i class="fa-solid fa-meteor"></i>
+            </div>
+
+            <div class="typing-bubble">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+
+        Footer
+        <div class="chat-footer">
+
+            <input
+                type="text"
+                id="userMessage"
+                placeholder="Ask Aura AI anything..."
+                autocomplete="off">
+
+            <button id="sendBtn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</html> --> -->
+
+
+
+<th:block th:fragment="chatbot">
+
+    <!-- Floating AI Button -->
+    <button id="chatToggleBtn" class="chat-toggle-btn" type="button">
+        <i class="fa-solid fa-meteor"></i>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatContainer" class="chat-container" style="display: none;">
+
+        <!-- HEADER -->
+        <div class="chat-header">
+
+            <div class="chat-header-left">
+
+                <div class="ai-logo">
+                    <i class="fa-solid fa-meteor"></i>
+                </div>
+
+                <div class="header-info">
+                    <h4>Aura AI</h4>
+                    <small>Your Smart Shopping Assistant</small>
+
+                    <span class="online-status">
+                        <i class="fa-solid fa-circle"></i>
+                        Online
+                    </span>
+                </div>
+
+            </div>
+
+            <button
+                id="closeChatBtn"
+                class="close-btn"
+                type="button"
+                aria-label="Close Aura AI">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <!-- CHAT BODY -->
+        <div id="chatMessages" class="chat-body">
+
+            <div class="ai-message">
+
+                <div class="avatar">
+                    <i class="fa-solid fa-meteor"></i>
+                </div>
+
+                <div class="message">
+
+                    <strong>Hello 👋</strong>
+
+                    <br><br>
+
+                    I'm <strong>Aura AI</strong>, your intelligent shopping assistant.
+
+                    <br><br>
+
+                    I can help you with:
+
+                    <ul>
+                        <li>🛍 Product Recommendations</li>
+                        <li>💰 Price Comparisons</li>
+                        <li>📱 Product Information</li>
+                        <li>🎯 Shopping Suggestions</li>
+                    </ul>
+
+                    Ask me anything!
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TYPING INDICATOR -->
+        <div
+            id="typingIndicator"
+            class="typing-indicator"
+            style="display: none;">
+
+            <div class="avatar small">
+                <i class="fa-solid fa-meteor"></i>
+            </div>
+
+            <div class="typing-bubble">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="chat-footer">
+
+            <input
+                type="text"
+                id="userMessage"
+                placeholder="Ask Aura AI anything..."
+                autocomplete="off">
+
+            <button
+                id="sendBtn"
+                type="button"
+                aria-label="Send message">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</th:block>

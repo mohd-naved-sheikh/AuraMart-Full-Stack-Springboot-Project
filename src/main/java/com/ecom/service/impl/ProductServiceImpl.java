@@ -1,14 +1,11 @@
 package com.ecom.service.impl;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,14 +32,24 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
 
+	private static final long serialVersionUID = 1L;
+	
 	@Override
+	@CachePut(value = "product", key = "#result.id")
+	@CacheEvict(value = { "products", "activeProducts", "categories" }, allEntries = true)
 	public Product saveProduct(Product product) {
-		return productRepository.save(product);
+	    return productRepository.save(product);
 	}
-
+	
+	
 	@Override
+	@Cacheable("products")
 	public List<Product> getAllProducts() {
-		return productRepository.findAll();
+
+	    System.out.println("Fetching All Products From MySQL...");
+
+	    return productRepository.findAll();
+
 	}
 
 	@Override
@@ -52,9 +59,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@CacheEvict(value = { "product", "products", "activeProducts", "categories" },
+	        key = "#id",
+	        allEntries = true)
 	public Boolean deleteProduct(Integer id) {
 		Product product = productRepository.findById(id).orElse(null);
-
 		if (!ObjectUtils.isEmpty(product)) {
 			productRepository.delete(product);
 			return true;
@@ -63,14 +72,19 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@Cacheable(value = "product", key = "#id")
 	public Product getProductById(Integer id) {
-		Product product = productRepository.findById(id).orElse(null);
-		return product;
+
+	    System.out.println("Fetching Product From MySQL...");
+
+	    return productRepository.findById(id).orElse(null);
+
 	}
 
 	@Override
+	@CachePut(value = "product", key = "#product.id")
+	@CacheEvict(value = { "products", "activeProducts", "categories" }, allEntries = true)
 	public Product updateProduct(Product product, MultipartFile image) {
-
 	    Product dbProduct = getProductById(product.getId());
 
 	    // 1. Update all the text details
@@ -109,6 +123,7 @@ public class ProductServiceImpl implements ProductService {
 	    return null;
 	}
 	@Override
+	@Cacheable(value = "activeProducts", key = "#category")
 	public List<Product> getAllActiveProducts(String category) {
 		List<Product> products = null;
 		if (ObjectUtils.isEmpty(category)) {
